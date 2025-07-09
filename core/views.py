@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from .models import Expense
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_GET
+from django.db.models import Sum
 
 # Create your views here.
 
@@ -107,4 +108,73 @@ def view_expenses(request):
         },
         status=500
         )
+
+
+
+
+@csrf_exempt
+@require_GET
+def expense_summary(request):
+    try:
+        user_id = request.GET.get("user_id")
+        if not user_id:
+            return JsonResponse(
+                {
+                    "status": False,
+                    "message": "User ID required"
+                },
+                status=400
+            )
+        try:
+            user=User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return JsonResponse(
+                {
+                    "status": False,
+                    "message": "User not found"
+                },
+                status=404
+            )
+        
+        month = request.GET.get("month")
+        expenses= Expense.objects.filter(user=user)
+
+        if month:
+            try:
+                year, mon= map(int, month.split("-"))
+                expenses=expenses.filter(date__year=year, date__month=mon)
+            except:
+                return JsonResponse(
+                    {
+                        "status": False,
+                        "message": "Invalid month format (use YYYY-MM)"
+                    }
+                )
+        total_amount=expenses.aggregate(Sum('amount'))["amount__sum"] or 0
+
+        categories={}
+        for e in expenses:
+            cat=e.category
+            categories[cat]=categories.get(cat,0)+float(e.amount)
+
+        return JsonResponse(
+            {
+                "status": True,
+                "message": "Summary generated",
+                "total_amount": float(total_amount),
+                "total_by_category": categories
+            }
+        )
+    
+    except Exception as e:
+        print("Error ", str(e))
+        return JsonResponse(
+            {
+                "status": False,
+                "message": str(e)
+            },
+            status=500
+        )
+
+
 
