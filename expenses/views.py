@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Expense
+from .models import Expense, CATEGORY_CHOICES
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from datetime import date
@@ -35,7 +35,8 @@ def expense_add(request):
         messages.success(request, "Expense added successfully")
         return redirect('expense_list')
 
-    return render(request, 'expenses/expense_form.html', {'action': 'Add'})
+    return render(request, 'expenses/expense_form.html', {'action': 'Add', 'categories': CATEGORY_CHOICES})
+
 
 
 @login_required(login_url='login')
@@ -52,7 +53,8 @@ def expense_edit(request, id):
         messages.success(request, "Expense updated successfully")
         return redirect('expense_list')
 
-    return render(request, 'expenses/expense_form.html', {'expense': expense, 'action': 'Edit'})
+    return render(request, 'expenses/expense_form.html', {'expense': expense, 'action': 'Edit', 'categories': CATEGORY_CHOICES})
+
 
 
 @login_required(login_url='login')
