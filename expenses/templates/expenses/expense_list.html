@@ -9,6 +9,7 @@
     <a href="{% url 'dashboard' %}" class="btn btn-info mb-2">Go to Dashboard</a>
 <div class="container mt-5">
     <h2>Your Expenses</h2>
+    <p class="lead">Hello, {{ user.username }}!</p>
     <a href="{% url 'expense_add' %}" class="btn btn-success mb-2">Add Expense</a>
     <table class="table table-bordered bg-white">
         <thead>

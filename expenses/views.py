@@ -12,7 +12,10 @@ from django.utils.timezone import now
 @login_required(login_url='login')
 def expense_list(request):
     expenses = Expense.objects.filter(user=request.user).order_by('-date')
-    return render(request, 'expenses/expense_list.html', {'expenses': expenses})
+    return render(request, 'expenses/expense_list.html', {
+        'expenses': expenses,
+        'user': request.user 
+    })
 
 
 @login_required(login_url='login')
@@ -35,7 +38,7 @@ def expense_add(request):
         messages.success(request, "Expense added successfully")
         return redirect('expense_list')
 
-    return render(request, 'expenses/expense_form.html', {'action': 'Add', 'categories': CATEGORY_CHOICES})
+    return render(request, 'expenses/expense_form.html', {'action': 'Add', 'categories': CATEGORY_CHOICES, 'user': request.user})
 
 
 
@@ -53,7 +56,7 @@ def expense_edit(request, id):
         messages.success(request, "Expense updated successfully")
         return redirect('expense_list')
 
-    return render(request, 'expenses/expense_form.html', {'expense': expense, 'action': 'Edit', 'categories': CATEGORY_CHOICES})
+    return render(request, 'expenses/expense_form.html', {'expense': expense, 'action': 'Edit', 'categories': CATEGORY_CHOICES, 'user': request.user})
 
 
 
@@ -89,5 +92,8 @@ def dashboard(request):
         'total_expense': total_expense,
         'category_summary': category_summary,
         'monthly_total': monthly_total,
+        'user': user,   # Pass the logged-in user
     }
     return render(request, 'expenses/dashboard.html', context)
+
+

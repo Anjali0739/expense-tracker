@@ -8,7 +8,10 @@
 </head>
 <body class="bg-light">
 <div class="container mt-5">
+    <!-- Greeting the logged-in user -->
     <h2>Dashboard</h2>
+    <p class="lead">Welcome, {{ user.username }}!</p>  <!-- Added this line -->
+
     <div class="row mb-4">
         <div class="col-md-4">
             <div class="card text-white bg-primary mb-3">

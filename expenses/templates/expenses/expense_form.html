@@ -8,6 +8,7 @@
 <body class="bg-light">
 <div class="container mt-5">
     <h2>{{ action }} Expense</h2>
+    <p class="lead">Hello, {{ user.username }}!</p>
     <form method="post">
         {% csrf_token %}
         <input type="text" name="title" placeholder="Title" class="form-control mb-2"
